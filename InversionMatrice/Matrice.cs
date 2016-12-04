@@ -18,7 +18,7 @@ namespace InversionMatrice
 
         #region Constructeurs
 
-        public Matrice():this(0, 0)
+        public Matrice() : this(0, 0)
         {
             values = null;
         }
@@ -28,6 +28,13 @@ namespace InversionMatrice
             nbrCol = col;
             nbrLn = ln;
             values = new double[ln, col];
+        }
+
+        public Matrice(double[,] data)
+        {
+            values = data;
+            nbrCol = data.GetLength(1);
+            nbrLn = data.GetLength(0);
         }
 
         #endregion
@@ -56,6 +63,32 @@ namespace InversionMatrice
         public double this[int iLn, int iCol] {
             get { return values[iLn, iCol]; }
             set { values[iLn, iCol] = value; }
+        }
+
+        public Matrice Product(Matrice m)
+        {
+            if(nbrLn == m.nbrCol)
+            {
+                Matrice temp = new Matrice(nbrLn, m.nbrCol);
+
+                for (int i = 0; i < nbrLn; i++)
+                {
+                    for (int j = 0; j < m.nbrCol; j++)
+                    {
+                        for (int k = 0; k < m.nbrCol; k++)
+                        {
+                            temp[i, j] += this[i,k]*m[k,j];
+                        }
+                    }
+                }
+
+                return temp;
+            }
+            else
+            {
+                return null;
+            }
+           
         }
         #endregion
 
