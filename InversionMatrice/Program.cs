@@ -10,7 +10,13 @@ namespace InversionMatrice
     {
         static void Main(string[] args)
         {
+            Matrice m;
 
+            InputFile input = new InputFile();
+            m = input.ReadFile();
+
+            if (m != null)
+                m.print();
         }
     }
 }
