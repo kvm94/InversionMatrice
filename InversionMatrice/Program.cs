@@ -10,13 +10,32 @@ namespace InversionMatrice
     {
         static void Main(string[] args)
         {
-            Matrice m;
+            try
+            {
+                Matrice m;
 
-            InputFile input = new InputFile();
-            m = input.ReadFile();
+                InputFile input = new InputFile();
+                m = input.ReadFile();
 
-            if (m != null)
-                m.print();
+                if (m != null)
+                {
+                    m.print();
+                    Console.WriteLine();
+                    Console.WriteLine("Gauss:");
+                    Console.WriteLine();
+
+                    SousMatrice U = m.Gauss();
+
+
+                }
+
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+
         }
     }
 }
