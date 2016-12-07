@@ -23,7 +23,7 @@ namespace InversionMatrice
                     Console.WriteLine("Matrice");
                     Console.WriteLine("=======");
                     Console.WriteLine();
-                    mat.Print();
+                    mat.Display();
                     Console.WriteLine();
 
                     //Affiche la triangulisation par Gauss
@@ -33,7 +33,9 @@ namespace InversionMatrice
 
                     int[,] swaps;
                     double[,] m;
-                    Matrice U = mat.Gauss(out swaps, out m);
+                    String display;
+                    Matrice U = mat.Gauss(out swaps, out m, out display);
+                    Console.WriteLine(display);
 
                     //Affichage des permutations
                     Console.WriteLine("Permutations");
@@ -51,7 +53,7 @@ namespace InversionMatrice
                     Console.WriteLine("==========");
                     Console.WriteLine();
 
-                    U.Print();
+                    U.Display();
                     Console.WriteLine();
 
                     //Affiche la matrice L
@@ -59,7 +61,7 @@ namespace InversionMatrice
                     Console.WriteLine("==========");
                     Console.WriteLine();
                     Matrice L = mat.InitL(m);
-                    L.Print();
+                    L.Display();
                     Console.WriteLine();
 
                     //Affiche la vérification.
@@ -74,11 +76,17 @@ namespace InversionMatrice
                         if (swaps[i, 0] != -1)
                             A.SwapLn(swaps[i, 0], swaps[i, 1]);
                     }
-                    A.Print();
+                    A.Display();
                     Console.WriteLine("Après permutations.");
                     Console.WriteLine();
                     Console.WriteLine("Matrice Initiale :");
-                    mat.Print();
+                    mat.Display();
+                    Console.WriteLine();
+
+                    if (mat.Equals(A))
+                        Console.WriteLine("Matrices identiques ! ");
+                    else
+                        throw new Exception("Les matrices ne sont pas identiques !");
                 }
 
             }
