@@ -23,7 +23,7 @@ namespace InversionMatrice
                     Console.WriteLine("Matrice");
                     Console.WriteLine("=======");
                     Console.WriteLine();
-                    mat.print();
+                    mat.Print();
                     Console.WriteLine();
 
                     //Affiche la triangulisation par Gauss
@@ -33,7 +33,7 @@ namespace InversionMatrice
 
                     int[,] swaps;
                     double[,] m;
-                    SousMatrice U = mat.Gauss(out swaps, out m);
+                    Matrice U = mat.Gauss(out swaps, out m);
 
                     //Affichage des permutations
                     Console.WriteLine("Permutations");
@@ -51,15 +51,15 @@ namespace InversionMatrice
                     Console.WriteLine("==========");
                     Console.WriteLine();
 
-                    U.print();
+                    U.Print();
                     Console.WriteLine();
 
                     //Affiche la matrice L
                     Console.WriteLine("Matrice L:");
                     Console.WriteLine("==========");
                     Console.WriteLine();
-                    SousMatrice L = mat.InitL(m);
-                    L.print();
+                    Matrice L = mat.InitL(m);
+                    L.Print();
                     Console.WriteLine();
 
                     //Affiche la vérification.
@@ -72,13 +72,13 @@ namespace InversionMatrice
                     for (int i = 0; i < swaps.GetLength(0); i++)
                     {
                         if (swaps[i, 0] != -1)
-                            A.swapLn(swaps[i, 0], swaps[i, 1]);
+                            A.SwapLn(swaps[i, 0], swaps[i, 1]);
                     }
-                    A.print();
+                    A.Print();
                     Console.WriteLine("Après permutations.");
                     Console.WriteLine();
                     Console.WriteLine("Matrice Initiale :");
-                    mat.print();
+                    mat.Print();
                 }
 
             }

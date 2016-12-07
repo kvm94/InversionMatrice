@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace InversionMatrice
 {
-    class Matrice:IMatrice<Matrice>
+    class Matrice
     {
         #region Attributs
 
@@ -42,8 +42,10 @@ namespace InversionMatrice
 
         #region Méthodes
 
+        #region Private
+
         //Initialise les valeurs de la matrice.
-        public void InitData(double[,] data)
+        private void InitData(double[,] data)
         {
             values = new double[data.GetLength(0), data.GetLength(1)];
             for (int i = 0; i < data.GetLength(0); i++)
@@ -54,15 +56,37 @@ namespace InversionMatrice
                 }
             }
         }
-       
+
+        //Vérifie si une matrice est inversible.
+        private bool IsInversible()
+        {
+            double determinant = Determinant();
+
+            if (determinant == 0)
+                return false;
+            else
+                return true;
+        }
+
+        #endregion
+
+        #region Public
+
+        //Indexeur pour accéder à une valeur de la matrice.
+        public double this[int iLn, int iCol]
+        {
+            get { return values[iLn, iCol]; }
+            set { values[iLn, iCol] = value; }
+        }
+
         //Vérifie si la matrice est une matrice carré.
-        public bool isSquare()
+        public bool IsSquare()
         {
             return nbrCol == nbrLn;
         }
 
         //Affiche la matrice.
-        public void print()
+        public void Print()
         {
             for (int i = 0; i < nbrLn; i++)
             {
@@ -74,23 +98,6 @@ namespace InversionMatrice
                 }
                 Console.WriteLine(")");
             }
-        }
-
-        //Indexeur pour accéder à une valeur de la matrice.
-        public double this[int iLn, int iCol] {
-            get { return values[iLn, iCol]; }
-            set { values[iLn, iCol] = value; }
-        }
-
-        //Vérifie si une matrice est inversible.
-        public bool isInversible()
-        {
-            double determinant = Determinant();
-
-            if (determinant == 0)
-                return false;
-            else
-                return true;
         }
 
         //Calcul le produit de deux matrices.
@@ -123,7 +130,7 @@ namespace InversionMatrice
         }
 
         //Echange deux lignes de place.
-        public void swapLn(int ln1, int ln2)
+        public void SwapLn(int ln1, int ln2)
         {
             double tmp;
 
@@ -135,16 +142,10 @@ namespace InversionMatrice
             }
         }
 
-        //Calcul le déterminant de la matrice.
-        public double Determinant() // Défectueuse. A refaire après LU
-        {
-            return 0;
-        }
-
         //Triangularise la matrice par la méthode de Gauss.
-        public SousMatrice Gauss(out int[,] swaps, out double[,] m)
+        public Matrice Gauss(out int[,] swaps, out double[,] m)
         {
-            SousMatrice temp = new SousMatrice(values);
+            Matrice temp = new Matrice(values);
             double pivot;
             
             //Initialise la sortie.
@@ -167,7 +168,7 @@ namespace InversionMatrice
                     swaps[k, 1] = k + 1;
 
                     //Permute les lignes et recalcul le pivot.
-                    temp.swapLn(k, k + 1);
+                    temp.SwapLn(k, k + 1);
                     pivot = temp[k, k];
                 }
                 else
@@ -194,7 +195,7 @@ namespace InversionMatrice
                 }
 
                 //Affiche le résultat à la fin de l'étape.
-                print();
+                Print();
 
                 //Affiche les lignes permutés pour chaque étapes.
                 if (swaps[k, 0] != -1)
@@ -206,9 +207,9 @@ namespace InversionMatrice
         }
 
         //Initialise la sous-matrice L
-        public SousMatrice InitL(double[,] m)
+        public Matrice InitL(double[,] m)
         {
-            SousMatrice L = new SousMatrice(m);
+            Matrice L = new Matrice(m);
 
             for (int i = 0; i < nbrLn; i++)
             {
@@ -216,6 +217,15 @@ namespace InversionMatrice
             }
             return L;
         }
+
+        //Calcul le déterminant de la matrice.
+        public double Determinant() // Défectueuse. A refaire après LU
+        {
+            return 0;
+        }
+
+
+        #endregion
 
         #endregion
 
