@@ -13,6 +13,8 @@ namespace InversionMatrice
             try
             {
                 Matrice mat;
+                String display;
+                bool flagSwaps;
 
                 InputFile input = new InputFile();
                 mat = input.ReadFile();
@@ -20,75 +22,104 @@ namespace InversionMatrice
                 if (mat != null)
                 {
                     //Affiche la matrice initiale.
-                    Console.WriteLine("Matrice");
-                    Console.WriteLine("=======");
+                    Console.WriteLine("===============================================");
+                    Console.WriteLine("=            Matrice à inverser               =");
+                    Console.WriteLine("===============================================");
                     Console.WriteLine();
                     mat.Display();
                     Console.WriteLine();
 
                     //Affiche la triangulisation par Gauss
-                    Console.WriteLine("Gauss:");
-                    Console.WriteLine("======");
+                    Console.WriteLine("===============================================");
+                    Console.WriteLine("=                   Gauss:                    =");
+                    Console.WriteLine("===============================================");
                     Console.WriteLine();
 
-                    int[,] swaps;
-                    double[,] m;
-                    String display;
-                    Matrice U = mat.Gauss(out swaps, out m, out display);
-                    Console.WriteLine(display);
+                    mat.DecompositionLU(out display);
+
+                    //Affiche les étapes pour Gauss
+                    Console.Write(display);
 
                     //Affichage des permutations
-                    Console.WriteLine("Permutations");
-                    Console.WriteLine("============");
+                    Console.WriteLine("===============================================");
+                    Console.WriteLine("=               Permutations                  =");
+                    Console.WriteLine("===============================================");
                     Console.WriteLine();
-                    for (int i = 0; i < swaps.GetLength(0); i++)
+                    flagSwaps = false;
+                    for (int i = 0; i < mat.Swaps.GetLength(0); i++)
                     {
-                       if (swaps[i,0] != -1)
-                            Console.WriteLine("Lignes : " + (swaps[i,0]+1) + " <-> " + (swaps[i,1]+1));
+                       if (mat.Swaps[i,0] != -1)
+                        {
+                            flagSwaps = true;
+                            Console.WriteLine("Lignes : " + (mat.Swaps[i, 0] + 1) + " <-> " + (mat.Swaps[i, 1] + 1));
+                        }
                     }
+                    if (!flagSwaps)
+                        Console.WriteLine("Pas de permutations.");
                     Console.WriteLine();
 
                     //Affiche la matrice U
-                    Console.WriteLine("Matrice U:");
-                    Console.WriteLine("==========");
+                    Console.WriteLine("===============================================");
+                    Console.WriteLine("=                  Matrice U                  =");
+                    Console.WriteLine("===============================================");
                     Console.WriteLine();
 
-                    U.Display();
+                    mat.MatriceU.Display();
                     Console.WriteLine();
 
                     //Affiche la matrice L
-                    Console.WriteLine("Matrice L:");
-                    Console.WriteLine("==========");
+                    Console.WriteLine("===============================================");
+                    Console.WriteLine("=                   Matrice L                 =");
+                    Console.WriteLine("===============================================");
                     Console.WriteLine();
-                    Matrice L = mat.InitL(m);
-                    L.Display();
+                    mat.MatriceL.Display();
                     Console.WriteLine();
 
                     //Affiche la vérification.
-                    Console.WriteLine("Vérification A=L*U:");
-                    Console.WriteLine("===================");
+                    Console.WriteLine("===============================================");
+                    Console.WriteLine("=              Vérification A=L*U             =");
+                    Console.WriteLine("===============================================");
                     Console.WriteLine();
-                    Matrice A = L.Product(U);
+                    Matrice A = mat.MatriceL.Product(mat.MatriceU);
                     Console.WriteLine("Matrice A :");
                     //On refait les permutation pour vérifier si c'est la meme matrice.
-                    for (int i = 0; i < swaps.GetLength(0); i++)
+                    for (int i = 0; i < mat.Swaps.GetLength(0); i++)
                     {
-                        if (swaps[i, 0] != -1)
-                            A.SwapLn(swaps[i, 0], swaps[i, 1]);
+                        if (mat.Swaps[i, 0] != -1)
+                            A.SwapLn(mat.Swaps[i, 0], mat.Swaps[i, 1]);
                     }
                     A.Display();
-                    Console.WriteLine("Après permutations.");
-                    Console.WriteLine();
-                    Console.WriteLine("Matrice Initiale :");
-                    mat.Display();
+                    flagSwaps = false;
+                    for (int i = 0; i < mat.Swaps.GetLength(0); i++)
+                    {
+                        if (mat.Swaps[i, 0] != -1)
+                            flagSwaps = true;
+                    }
+                    if(flagSwaps)
+                        Console.WriteLine("Après permutations.");
+
                     Console.WriteLine();
 
                     if (mat.Equals(A))
+                    {
                         Console.WriteLine("Matrices identiques ! ");
+                        Console.WriteLine("");
+                    }
                     else
                         throw new Exception("Les matrices ne sont pas identiques !");
-                }
 
+                    //Affiche l'inverse des matrices.
+                    Console.WriteLine("===============================================");
+                    Console.WriteLine("=                     L'                      =");
+                    Console.WriteLine("===============================================");
+                    Console.WriteLine();
+                    Matrice LPrime = mat.InverseL(out display);
+                    Console.WriteLine(display);
+                    Console.WriteLine();
+
+                    //mat.Inverse();
+                }
+                
             }
             catch(Exception ex)
             {

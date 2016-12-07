@@ -10,9 +10,13 @@ namespace InversionMatrice
     {
         #region Attributs
 
-        public int nbrCol { get; }
-        public int nbrLn { get; }
+        private int nbrCol;
+        private int nbrLn;
+        private double ?determinant;
         private double[,] values;
+        private Matrice L;
+        private Matrice U;
+        private int[,] swaps; //Historique des permutations. (-1 si pas de permutation)
 
         #endregion
 
@@ -21,6 +25,9 @@ namespace InversionMatrice
         public Matrice() : this(0, 0)
         {
             values = null;
+            determinant = null;
+            L = null;
+            U = null;
         }
 
         public Matrice(int ln, int col)
@@ -28,6 +35,9 @@ namespace InversionMatrice
             nbrCol = col;
             nbrLn = ln;
             values = new double[ln, col];
+            determinant = null;
+            L = null;
+            U = null;
         }
 
         public Matrice(double[,] data)
@@ -36,6 +46,9 @@ namespace InversionMatrice
             InitData(data);
             nbrCol = data.GetLength(1);
             nbrLn = data.GetLength(0);
+            determinant = null;
+            L = null;
+            U = null;
         }
 
         #endregion
@@ -57,10 +70,62 @@ namespace InversionMatrice
             }
         }
 
+        //Initialise la sous-matrice L à partir des coeficients récupéré par Gauss.
+        private Matrice InitL(double[,] m)
+        {
+            Matrice L = new Matrice(m);
+
+            for (int i = 0; i < nbrLn; i++)
+            {
+                L[i, i] = 1;
+            }
+            return L;
+        }
+
+        //Calcul le déterminant de la matrice.
+        private double InitDeterminant()
+        {
+            //Se base sur la décomposition LU et ne peut donc pas être initialiser avant.
+            if (L != null && U != null)
+            {
+                double det;
+                double detU = 1;
+                double detL = 1;
+                int p=0;
+
+                //Compte le nombre de permutations.
+                for (int i = 0; i < swaps.GetLength(0); i++)
+                {
+                    if (swaps[i, 0] != -1)
+                        p++;
+                }
+
+                for (int i = 0; i < NbrLn; i++)
+                {
+                    detU *= U[i, i];
+                    detL *= L[i, i];
+                }
+
+                detU *= Math.Pow(-1, p);
+                detL *= Math.Pow(-1, p);
+
+                det = detU * detL;
+
+
+                return det;
+            }
+            else
+            {
+                DecompositionLU();
+                //Récursivité.
+                return InitDeterminant();
+            }
+        }
+
         //Vérifie si une matrice est inversible.
         private bool IsInversible()
         {
-            double determinant = Determinant();
+            double determinant = InitDeterminant();
 
             if (determinant == 0)
                 return false;
@@ -72,11 +137,23 @@ namespace InversionMatrice
 
         #region Public
 
-        //Indexeur pour accéder à une valeur de la matrice.
-        public double this[int iLn, int iCol]
+        //Initialise la matrice identité.
+        public static Matrice InitIdentite(int n)
         {
-            get { return values[iLn, iCol]; }
-            set { values[iLn, iCol] = value; }
+            Matrice m;
+            m = new Matrice(n, n);
+
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    if (i == j)
+                        m[i, j] = 1;
+                    else
+                        m[i, j] = 0;
+                }
+            }
+            return m;
         }
 
         //Vérifie si la matrice est une matrice carré.
@@ -160,140 +237,145 @@ namespace InversionMatrice
             }
         }
 
-        //Triangularise la matrice par la méthode de Gauss.
-        public Matrice Gauss(out int[,] swaps, out double[,] m)
+        //Echange deux colonnes de place.
+        public void SwapCol(int col1, int col2)
         {
-            Matrice temp = new Matrice(values);
-            double pivot;
-            
-            //Initialise la sortie.
-            swaps = new int[nbrLn-1,2];
-            m = new double[nbrLn, nbrCol];
-
-            //Pour chaque étape. (k-1 étapes)
-            for (int k = 0; k < nbrLn -1; k++)
-            {
-                pivot = temp[k, k];
-
-                //Si le pivot vaut 0 il faut permuter les lignes.
-                if (pivot == 0)
-                {
-                    //Récupére les numéros des lignes qui permutent.
-                    swaps[k, 0] = k;
-                    swaps[k, 1] = k + 1;
-
-                    //Permute les lignes et recalcul le pivot.
-                    temp.SwapLn(k, k + 1);
-                    pivot = temp[k, k];
-                }
-                else
-                {
-                    //Indique que les lignes n'ont pas été permutés.
-                    swaps[k, 0] = -1;
-                    swaps[k, 1] = -1;
-                }
-
-                //Pour chaque ligne de la matrice. 
-                //Calcul du coefficient de l'étape k.
-                for (int i = k + 1; i < nbrLn; i++)
-                {
-                    m[i, k] = temp[i, k] / pivot;
-
-                    //Met les 0.
-                    for (int j = k; j < nbrLn; j++)
-                    {
-                        temp[i, j] -= m[i, k] * temp[k, j];
-                    }
-                }
-            }
-            return temp;
-        }
-
-        //Triangularise la matrice par la méthode de Gauss avec une sortie String pour l'affichage.
-        //A terminer !---------------------------------------------------------------------------------------------------------
-        public Matrice Gauss(out int[,] swaps, out double[,] m, out String display)
-        {
-            Matrice temp = new Matrice(values);
-            double pivot;
-
-            //Initialise la sortie.
-            display = "";
-            swaps = new int[nbrLn - 1, 2];
-            m = new double[nbrLn, nbrCol];
-
-            //Pour chaque étape. (k-1 étapes)
-            for (int k = 0; k < nbrLn - 1; k++)
-            {
-                display += "Etape : " + (k + 1) + "\n";
-                display += "---------\n";
-
-                pivot = temp[k, k];
-
-                //Si le pivot vaut 0 il faut permuter les lignes.
-                if (pivot == 0)
-                {
-                    //Récupére les numéros des lignes qui permutent.
-                    swaps[k, 0] = k;
-                    swaps[k, 1] = k + 1;
-
-                    //Permute les lignes et recalcul le pivot.
-                    temp.SwapLn(k, k + 1);
-                    pivot = temp[k, k];
-                }
-                else
-                {
-                    //Indique que les lignes n'ont pas été permutés.
-                    swaps[k, 0] = -1;
-                    swaps[k, 1] = -1;
-                }
-                display += String.Format("Pivot = {0,6:#0.00} \n", pivot);
-
-
-                //Pour chaque ligne de la matrice. 
-                //Calcul du coefficient de l'étape k.
-                for (int i = k + 1; i < nbrLn; i++)
-                {
-                    m[i, k] = temp[i, k] / pivot;
-                    display += String.Format("m" + (i + 1) + (k + 1) + " = {0,6:#0.00} \n", m[i, k]);
-
-                    //Met les 0.
-                    for (int j = k; j < nbrLn; j++)
-                    {
-                        temp[i, j] -= m[i, k] * temp[k, j];
-                    }
-                }
-
-                //Affiche le résultat à la fin de l'étape.
-                display += Print();
-
-                //Affiche les lignes permutés pour chaque étapes.
-                if (swaps[k, 0] != -1)
-                   display += "Lignes permutés : " + (swaps[k, 0] + 1) + " <-> " + (swaps[k, 1] + 1) + "\n";
-
-                display += "\n";
-            }
-            return temp;
-        }
-
-        //Initialise la sous-matrice L
-        public Matrice InitL(double[,] m)
-        {
-            Matrice L = new Matrice(m);
+            double tmp;
 
             for (int i = 0; i < nbrLn; i++)
             {
-                L[i, i] = 1;
+                tmp = values[i, col1];
+                values[i, col1] = values[i, col2];
+                values[i, col2] = tmp;
             }
-            return L;
         }
 
-        //Calcul le déterminant de la matrice.
-        public double Determinant() // Défectueuse. A refaire après LU
+        //Triangularise la matrice par la méthode de Gauss.
+        public Matrice Gauss(out int[,] swaps, out double[,] m)
         {
-            return 0;
+            if (IsSquare())
+            {
+                Matrice temp = new Matrice(values);
+                double pivot;
+
+                //Initialise la sortie.
+                swaps = new int[nbrLn - 1, 2];
+                m = new double[nbrLn, nbrCol];
+
+                //Pour chaque étape. (k-1 étapes)
+                for (int k = 0; k < nbrLn - 1; k++)
+                {
+                    pivot = temp[k, k];
+
+                    //Si le pivot vaut 0 il faut permuter les lignes.
+                    if (pivot == 0)
+                    {
+                        //Récupére les numéros des lignes qui permutent.
+                        swaps[k, 0] = k;
+                        swaps[k, 1] = k + 1;
+
+                        //Permute les lignes et recalcul le pivot.
+                        temp.SwapLn(k, k + 1);
+                        pivot = temp[k, k];
+                    }
+                    else
+                    {
+                        //Indique que les lignes n'ont pas été permutés.
+                        swaps[k, 0] = -1;
+                        swaps[k, 1] = -1;
+                    }
+
+                    //Pour chaque ligne de la matrice. 
+                    //Calcul du coefficient de l'étape k.
+                    for (int i = k + 1; i < nbrLn; i++)
+                    {
+                        m[i, k] = temp[i, k] / pivot;
+
+                        //Met les 0.
+                        for (int j = k; j < nbrLn; j++)
+                        {
+                            temp[i, j] -= m[i, k] * temp[k, j];
+                        }
+                    }
+                }
+                return temp;
+            }
+            else
+                throw new Exception("La matrice n'est pas carrée : impossible d'utiliser Gauss!");
+            
         }
 
+        //Triangularise la matrice par la méthode de Gauss avec une sortie String pour l'affichage.
+        public Matrice Gauss(out int[,] swaps, out double[,] m, out String display)
+        {
+            if (IsSquare())
+            {
+                Matrice temp = new Matrice(values);
+                double pivot;
 
+                //Initialise la sortie.
+                display = "";
+                swaps = new int[nbrLn - 1, 2];
+                m = new double[nbrLn, nbrCol];
+
+                //Pour chaque étape. (k-1 étapes)
+                for (int k = 0; k < nbrLn - 1; k++)
+                {
+                    display += "Etape : " + (k + 1) + "\n";
+                    display += "---------\n\n";
+
+                    pivot = temp[k, k];
+
+                    //Si le pivot vaut 0 il faut permuter les lignes.
+                    if (pivot == 0)
+                    {
+                        //Récupére les numéros des lignes qui permutent.
+                        swaps[k, 0] = k;
+                        swaps[k, 1] = k + 1;
+
+                        //Permute les lignes et recalcul le pivot.
+                        temp.SwapLn(k, k + 1);
+                        pivot = temp[k, k];
+                    }
+                    else
+                    {
+                        //Indique que les lignes n'ont pas été permutés.
+                        swaps[k, 0] = -1;
+                        swaps[k, 1] = -1;
+                    }
+                    display += String.Format("Pivot = {0,6:#0.00} \n", pivot);
+
+
+                    //Pour chaque ligne de la matrice. 
+                    //Calcul du coefficient de l'étape k.
+                    for (int i = k + 1; i < nbrLn; i++)
+                    {
+                        m[i, k] = temp[i, k] / pivot;
+                        display += String.Format("m" + (i + 1) + (k + 1) + " = {0,6:#0.00} \n", m[i, k]);
+
+                        //Met les 0.
+                        for (int j = k; j < nbrLn; j++)
+                        {
+                            temp[i, j] -= m[i, k] * temp[k, j];
+                        }
+                    }
+
+                    //Affiche le résultat à la fin de l'étape.
+                    display +=  "\n" + temp.Print();
+
+                    //Affiche les lignes permutés pour chaque étapes.
+                    if (swaps[k, 0] != -1)
+                        display += "Lignes permutés : " + (swaps[k, 0] + 1) + " <-> " + (swaps[k, 1] + 1) + "\n";
+
+                    display += "\n";
+                }
+                return temp;
+            }
+            else
+                throw new Exception("La matrice n'est pas carrée : impossible d'utiliser Gauss!");            
+        }
+
+        //Vérifie si deux matrices sont egales.
         public bool Equals(Matrice B)
         {
             bool check = true;
@@ -317,9 +399,176 @@ namespace InversionMatrice
             return check;
         }
 
+        //Décompose la matrice en deux sous matrice L et U.
+        public void DecompositionLU()
+        {
+            double[,] m;
+            U = Gauss(out swaps, out m);
+            L = InitL(m);
+        }
+
+        //Décompose la matrice en deux sous matrice L et U avec une sortie de l'affichage.
+        public void DecompositionLU(out String display)
+        {
+            double[,] m;
+            U = Gauss(out swaps, out m, out display);
+            L = InitL(m);
+        }
+
+        //Inverse la matrice.
+        public void Inverse()
+        {
+            if (IsInversible())
+            {
+                Matrice LPrime = InverseL();
+
+
+            }
+            else
+                throw new Exception("La matrice n'est pas inversible : déterminant = 0");
+        }
+
+        //Inverse la matrice L.
+        public Matrice InverseL()
+        {
+            if (IsInversible())
+            {
+                Matrice ident = InitIdentite(NbrLn);
+                Matrice LPrime = new Matrice(NbrLn, NbrCol);
+                double somme =0;
+
+                //La première ligne est la même que l'identité.
+                for (int j = 0; j < nbrCol; j++)
+                    LPrime[0, j] = ident[0, j];
+
+                //Pour chaque ligne.
+                for (int i = 1; i < NbrLn; i++)
+                {
+                    //Pour chaque colonne.
+                    for (int j = 0; j < NbrCol; j++)
+                    {
+                        somme = 0;
+
+                        //Nombre d'élément de la somme.
+                        for (int k = 0; k < i; k++)
+                        {
+                            somme += L[i, k] * LPrime[k, j];
+                        }
+                        
+                        //Applique la formule.
+                        LPrime[i, j] = ident[i, j]-somme;
+                    }
+                }
+                return LPrime;
+            }
+            else
+                throw new Exception("La matrice n'est pas inversible : déterminant = 0");
+        }
+
+        //Inverse la matrice L avec sortie pour l'affichage.
+        public Matrice InverseL(out String display)
+        {
+            if (IsInversible())
+            {
+                Matrice ident = InitIdentite(NbrLn);
+                Matrice LPrime = new Matrice(NbrLn, NbrCol);
+                double somme = 0;
+                display = "Etape 1: \n";
+                display += "--------\n \n";
+
+                //La première ligne est la même que l'identité.
+                
+                for (int j = 0; j < nbrCol; j++)
+                {
+                    LPrime[0, j] = ident[0, j];
+                    display += "x1" + j +" = " + LPrime[0, j] + " = &1" + j + "\n";
+                }
+
+                //Pour chaque ligne.
+                for (int i = 1; i < NbrLn; i++)
+                {
+                    display += "\nEtape " + (i+1) + ": \n";
+                    display += "--------\n \n";
+                    //Pour chaque colonne.
+                    for (int j = 0; j < NbrCol; j++)
+                    {
+                        somme = 0;
+                        
+                        String tmp = "";
+                        //Nombre d'élément de la somme.
+                        for (int k = 0; k < i; k++)
+                        {
+                            tmp += " - m" + (i+1) + (k+1) + " * " + "x" + (k+1) + (j+1); 
+                            somme += L[i, k] * LPrime[k, j];
+                        }
+
+                        //Applique la formule.
+                        LPrime[i, j] = ident[i, j] - somme;
+
+                        display += "x" + (i+1) + (j+1) + " = "+ LPrime[i,j] + " = &" + (i+1) + (j+1) + tmp + "\n";
+                    }
+                }
+                display += "\n"+LPrime.Print();
+                return LPrime;
+            }
+            else
+                throw new Exception("La matrice n'est pas inversible : déterminant = 0");
+        }
 
         #endregion
 
+        #region Accesseurs
+
+        public int NbrCol
+        {
+            get { return nbrCol; }
+        }
+
+        public int NbrLn
+        {
+            get { return nbrLn; }
+        }
+
+        //Indexeur pour accéder à une valeur de la matrice.
+        public double this[int iLn, int iCol]
+        {
+            get { return values[iLn, iCol]; }
+            set { values[iLn, iCol] = value; }
+        }
+
+        public int[,] Swaps
+        {
+            get { return swaps; }
+        }
+
+        public double Determinant
+        {
+            get
+            {
+                //Le determinant est null car la décomposition LU n'a pas encore été faite.
+                if (determinant != null)
+                    return (double)determinant;
+                else
+                {
+                    determinant = InitDeterminant();
+                    return (double)determinant;
+                }
+            }
+        }
+
+        public Matrice MatriceL
+        {
+            get { return L; }
+        }
+
+        public Matrice MatriceU
+        {
+            get { return U; }
+        }
+
+
+
+        #endregion
 
         #endregion
 
