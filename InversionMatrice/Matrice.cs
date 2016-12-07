@@ -12,7 +12,7 @@ namespace InversionMatrice
 
         public int nbrCol { get; }
         public int nbrLn { get; }
-        public double[,] values { get; }
+        private double[,] values;
 
         #endregion
 
@@ -32,7 +32,8 @@ namespace InversionMatrice
 
         public Matrice(double[,] data)
         {
-            values = data;
+            //Besoin pour ne pas copier la référence.
+            InitData(data);
             nbrCol = data.GetLength(1);
             nbrLn = data.GetLength(0);
         }
@@ -40,6 +41,19 @@ namespace InversionMatrice
         #endregion
 
         #region Méthodes
+
+        //Initialise les valeurs de la matrice.
+        public void InitData(double[,] data)
+        {
+            values = new double[data.GetLength(0), data.GetLength(1)];
+            for (int i = 0; i < data.GetLength(0); i++)
+            {
+                for (int j = 0; j < data.GetLength(1); j++)
+                {
+                    values[i, j] = data[i, j];
+                }
+            }
+        }
        
         //Vérifie si la matrice est une matrice carré.
         public bool isSquare()
@@ -124,67 +138,83 @@ namespace InversionMatrice
         //Calcul le déterminant de la matrice.
         public double Determinant() // Défectueuse. A refaire après LU
         {
-            int i, j, k;
-            double det = 0;
-            for (i = 0; i < nbrCol - 1; i++)
-            {
-                for (j = i + 1; j < nbrCol+1; j++)
-                {
-                    det = values[j, i] / values[i, i];
-                    for (k = i; k < nbrCol; k++)
-                        values[j, k] = values[j, k] - det * values[i, k];
-                }
-            }
-            det = 1;
-            for (i = 0; i < nbrCol; i++)
-                det = det * values[i, i];
-            return det;
+            return 0;
         }
 
         //Triangularise la matrice par la méthode de Gauss.
-        public SousMatrice Gauss()
+        public SousMatrice Gauss(out int[,] swaps, out double[,] m)
         {
             SousMatrice temp = new SousMatrice(values);
-            double m;
             double pivot;
+            
+            //Initialise la sortie.
+            swaps = new int[nbrLn-1,2];
+            m = new double[nbrLn, nbrCol];
 
             //Pour chaque étape. (k-1 étapes)
             for (int k = 0; k < nbrLn -1; k++)
             {
-                Console.WriteLine("Etape : " + k);
-                Console.WriteLine("-------------");
+                Console.WriteLine("Etape : " + (k+1));
+                Console.WriteLine("---------");
 
                 pivot = temp[k, k];
 
-                Console.WriteLine(String.Format("Pivot = {0,6:#0.00} ", pivot));
-
                 //Si le pivot vaut 0 il faut permuter les lignes.
                 if (pivot == 0)
-                    swapLn(k, k + 1);
+                {
+                    //Récupére les numéros des lignes qui permutent.
+                    swaps[k, 0] = k;
+                    swaps[k, 1] = k + 1;
+
+                    //Permute les lignes et recalcul le pivot.
+                    temp.swapLn(k, k + 1);
+                    pivot = temp[k, k];
+                }
+                else
+                {
+                    //Indique que les lignes n'ont pas été permutés.
+                    swaps[k, 0] = -1;
+                    swaps[k, 1] = -1;
+                }
+                Console.WriteLine(String.Format("Pivot = {0,6:#0.00} ", pivot));
+
 
                 //Pour chaque ligne de la matrice. 
                 //Calcul du coefficient de l'étape k.
                 for (int i = k+1; i < nbrLn; i++)
                 {
-                    m = temp[i, k] / pivot;
-                    Console.WriteLine(String.Format("m" +(i+1)+(k+1)+ " = {0,6:#0.00}", m));
+                    m[i, k] = temp[i, k] / pivot;
+                    Console.WriteLine(String.Format("m" +(i+1)+(k+1)+ " = {0,6:#0.00}", m[i,k]));
 
                     //Met les 0.
                     for (int j = k; j < nbrLn; j++)
                     {
-                        temp[i, j] -= m * temp[k, j];
+                        temp[i, j] -= m[i,k] * temp[k, j];
                     }
                 }
 
                 //Affiche le résultat à la fin de l'étape.
                 print();
+
+                //Affiche les lignes permutés pour chaque étapes.
+                if (swaps[k, 0] != -1)
+                    Console.WriteLine("Lignes permutés : " + (swaps[k, 0] + 1) + " <-> " + (swaps[k, 1] + 1));
+
                 Console.WriteLine();
-
             }
-
-
-
             return temp;
+        }
+
+        //Initialise la sous-matrice L
+        public SousMatrice InitL(double[,] m)
+        {
+            SousMatrice L = new SousMatrice(m);
+
+            for (int i = 0; i < nbrLn; i++)
+            {
+                L[i, i] = 1;
+            }
+            return L;
         }
 
         #endregion

@@ -10,10 +10,11 @@ namespace InversionMatrice
     {
         int nbrCol { get; }
         int nbrLn { get; }
-        double[,] values { get; }
 
+        void InitData(double[,] data);
         bool isSquare();
         void print();
-        T Product(T m);    
+        Matrice Product(T m);
+        void swapLn(int ln1, int ln2);
     }
 }

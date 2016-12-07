@@ -12,7 +12,7 @@ namespace InversionMatrice
 
         public int nbrCol { get; }
         public int nbrLn { get; }
-        public double[,] values { get; }
+        private double[,] values;
 
         #endregion
 
@@ -32,7 +32,8 @@ namespace InversionMatrice
 
         public SousMatrice(double[,] data)
         {
-            values = data;
+            //Besoin pour ne pas copier la référence.
+            InitData(data);
             nbrCol = data.GetLength(1);
             nbrLn = data.GetLength(0);
         }
@@ -40,6 +41,19 @@ namespace InversionMatrice
         #endregion
 
         #region Méthodes
+
+        //Initialise les valeurs de la matrice.
+        public void InitData(double[,] data)
+        {
+            values = new double[data.GetLength(0), data.GetLength(1)];
+            for (int i = 0; i < data.GetLength(0); i++)
+            {
+                for (int j = 0; j < data.GetLength(1); j++)
+                {
+                    values[i, j] = data[i, j];
+                }
+            }
+        }
 
         //Vérifie si la matrice est une matrice carré.
         public bool isSquare()
@@ -70,12 +84,12 @@ namespace InversionMatrice
         }
 
         //Calcul le produit de deux matrices.
-        public SousMatrice Product(SousMatrice m)
+        public Matrice Product(SousMatrice m)
         {
             //Vérifie si l'on peut multiplier les matrice entre elles.
             if (nbrLn == m.nbrCol)
             {
-                SousMatrice temp = new SousMatrice(nbrLn, m.nbrCol);
+                Matrice temp = new Matrice(nbrLn, m.nbrCol);
 
                 for (int i = 0; i < nbrLn; i++)
                 {
@@ -108,6 +122,19 @@ namespace InversionMatrice
                 tmp = values[i, col1];
                 values[i, col1] = values[i, col2];
                 values[i, col2] = tmp;
+            }
+        }
+
+        //Echange deux lignes de place.
+        public void swapLn(int ln1, int ln2)
+        {
+            double tmp;
+
+            for (int i = 0; i < nbrCol; i++)
+            {
+                tmp = values[ln1, i];
+                values[ln1, i] = values[ln2, i];
+                values[ln2, i] = tmp;
             }
         }
         #endregion
