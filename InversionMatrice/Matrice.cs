@@ -86,7 +86,7 @@ namespace InversionMatrice
         }
 
         //Affiche la matrice.
-        public void Print()
+        public void Display()
         {
             for (int i = 0; i < nbrLn; i++)
             {
@@ -98,6 +98,24 @@ namespace InversionMatrice
                 }
                 Console.WriteLine(")");
             }
+        }
+
+        //Renvoi l'affichage de la matrice.
+        public String Print()
+        {
+            String display = "";
+            for (int i = 0; i < nbrLn; i++)
+            {
+                display += '(';
+                for (int j = 0; j < nbrCol; j++)
+                {
+
+                    display += String.Format("{0,6:#0.00} ", values[i, j]);
+                }
+                display += ")\n";
+            }
+            display += "\n";
+            return display;
         }
 
         //Calcul le produit de deux matrices.
@@ -155,8 +173,59 @@ namespace InversionMatrice
             //Pour chaque étape. (k-1 étapes)
             for (int k = 0; k < nbrLn -1; k++)
             {
-                Console.WriteLine("Etape : " + (k+1));
-                Console.WriteLine("---------");
+                pivot = temp[k, k];
+
+                //Si le pivot vaut 0 il faut permuter les lignes.
+                if (pivot == 0)
+                {
+                    //Récupére les numéros des lignes qui permutent.
+                    swaps[k, 0] = k;
+                    swaps[k, 1] = k + 1;
+
+                    //Permute les lignes et recalcul le pivot.
+                    temp.SwapLn(k, k + 1);
+                    pivot = temp[k, k];
+                }
+                else
+                {
+                    //Indique que les lignes n'ont pas été permutés.
+                    swaps[k, 0] = -1;
+                    swaps[k, 1] = -1;
+                }
+
+                //Pour chaque ligne de la matrice. 
+                //Calcul du coefficient de l'étape k.
+                for (int i = k + 1; i < nbrLn; i++)
+                {
+                    m[i, k] = temp[i, k] / pivot;
+
+                    //Met les 0.
+                    for (int j = k; j < nbrLn; j++)
+                    {
+                        temp[i, j] -= m[i, k] * temp[k, j];
+                    }
+                }
+            }
+            return temp;
+        }
+
+        //Triangularise la matrice par la méthode de Gauss avec une sortie String pour l'affichage.
+        //A terminer !---------------------------------------------------------------------------------------------------------
+        public Matrice Gauss(out int[,] swaps, out double[,] m, out String display)
+        {
+            Matrice temp = new Matrice(values);
+            double pivot;
+
+            //Initialise la sortie.
+            display = "";
+            swaps = new int[nbrLn - 1, 2];
+            m = new double[nbrLn, nbrCol];
+
+            //Pour chaque étape. (k-1 étapes)
+            for (int k = 0; k < nbrLn - 1; k++)
+            {
+                display += "Etape : " + (k + 1) + "\n";
+                display += "---------\n";
 
                 pivot = temp[k, k];
 
@@ -177,31 +246,31 @@ namespace InversionMatrice
                     swaps[k, 0] = -1;
                     swaps[k, 1] = -1;
                 }
-                Console.WriteLine(String.Format("Pivot = {0,6:#0.00} ", pivot));
+                display += String.Format("Pivot = {0,6:#0.00} \n", pivot);
 
 
                 //Pour chaque ligne de la matrice. 
                 //Calcul du coefficient de l'étape k.
-                for (int i = k+1; i < nbrLn; i++)
+                for (int i = k + 1; i < nbrLn; i++)
                 {
                     m[i, k] = temp[i, k] / pivot;
-                    Console.WriteLine(String.Format("m" +(i+1)+(k+1)+ " = {0,6:#0.00}", m[i,k]));
+                    display += String.Format("m" + (i + 1) + (k + 1) + " = {0,6:#0.00} \n", m[i, k]);
 
                     //Met les 0.
                     for (int j = k; j < nbrLn; j++)
                     {
-                        temp[i, j] -= m[i,k] * temp[k, j];
+                        temp[i, j] -= m[i, k] * temp[k, j];
                     }
                 }
 
                 //Affiche le résultat à la fin de l'étape.
-                Print();
+                display += Print();
 
                 //Affiche les lignes permutés pour chaque étapes.
                 if (swaps[k, 0] != -1)
-                    Console.WriteLine("Lignes permutés : " + (swaps[k, 0] + 1) + " <-> " + (swaps[k, 1] + 1));
+                   display += "Lignes permutés : " + (swaps[k, 0] + 1) + " <-> " + (swaps[k, 1] + 1) + "\n";
 
-                Console.WriteLine();
+                display += "\n";
             }
             return temp;
         }
@@ -225,7 +294,32 @@ namespace InversionMatrice
         }
 
 
+        public bool Equals(Matrice B)
+        {
+            bool check = true;
+            int i=0, j=0;
+
+            if (nbrLn == B.nbrLn && nbrCol == B.nbrCol)
+            {
+                while(i < B.nbrLn  && check == true)
+                {
+                    while (j < B.nbrCol && check == true)
+                    {
+                        check = values[i,j] == B[i, j];
+                        j++;
+                    }
+                    i++;
+                }
+            }
+            else
+                check = false;
+
+            return check;
+        }
+
+
         #endregion
+
 
         #endregion
 
