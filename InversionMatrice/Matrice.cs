@@ -171,7 +171,7 @@ namespace InversionMatrice
                 for (int j = 0; j < nbrCol; j++)
                 {
    
-                    Console.Write(String.Format("{0,6:#0.00} ", values[i, j]));
+                    Console.Write(String.Format("{0,7:#0.00} ", values[i, j]));
                 }
                 Console.WriteLine(")");
             }
@@ -187,7 +187,7 @@ namespace InversionMatrice
                 for (int j = 0; j < nbrCol; j++)
                 {
 
-                    display[i] += String.Format("{0,6:#0.00} ", values[i, j]);
+                    display[i] += String.Format("{0,7:#0.00} ", values[i, j]);
                 }
                 display[i] += ")";
             }
@@ -344,7 +344,7 @@ namespace InversionMatrice
                         swaps[k, 0] = -1;
                         swaps[k, 1] = -1;
                     }
-                    display.Add(String.Format("Pivot = {0,6:#0.00}", pivot));
+                    display.Add(String.Format("Pivot = {0,6:#0.##}", pivot));
 
 
                     //Pour chaque ligne de la matrice. 
@@ -352,7 +352,7 @@ namespace InversionMatrice
                     for (int i = k + 1; i < nbrLn; i++)
                     {
                         m[i, k] = temp[i, k] / pivot;
-                        display.Add(String.Format("m" + (i + 1) + (k + 1) + " = {0,6:#0.00}", m[i, k]));
+                        display.Add(String.Format("{0,5} = {1,6:#0.##}", "m"+(i + 1) + (k + 1), m[i, k]));
 
                         //Met les 0.
                         for (int j = k; j < nbrLn; j++)
@@ -360,6 +360,7 @@ namespace InversionMatrice
                             temp[i, j] -= m[i, k] * temp[k, j];
                         }
                     }
+                    display.Add("");
 
                     //Affiche le résultat à la fin de l'étape.
                     foreach (var item in temp.Print())
@@ -489,7 +490,7 @@ namespace InversionMatrice
                 for (int j = 0; j < nbrCol; j++)
                 {
                     LPrime[0, j] = ident[0, j];
-                    display.Add("x1" + j +" = " + LPrime[0, j] + " = &1" + j);
+                    display.Add(String.Format("x1" + j + " = {0,8:#0.##} = &1" + j, LPrime[0, j]));
                 }
 
                 //Pour chaque ligne.
@@ -498,7 +499,6 @@ namespace InversionMatrice
                     display.Add("");
                     display.Add("Etape " + (i+1) + ":");
                     display.Add("--------");
-                    display.Add("");
                     display.Add("");
 
                     //Pour chaque colonne.
@@ -517,7 +517,7 @@ namespace InversionMatrice
                         //Applique la formule.
                         LPrime[i, j] = ident[i, j] - somme;
 
-                        display.Add("x" + (i+1) + (j+1) + " = "+ LPrime[i,j] + " = &" + (i+1) + (j+1) + tmp);
+                        display.Add(String.Format("x" + (i+1) + (j+1) + " = {0,8:#0.##} = &" + (i+1) + (j+1) + tmp, LPrime[i, j]));
                     }
                 }
                 display.Add("");

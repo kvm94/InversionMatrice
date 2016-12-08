@@ -147,6 +147,10 @@ namespace InversionMatrice
             Flux.WriteLine("=               Inversion de L                =");
             Flux.WriteLine("===============================================");
             Flux.WriteLine();
+            Flux.WriteLine("& étant la matrice identité.");
+            Flux.WriteLine();
+
+
             foreach (var item in display)
             {
                 Flux.WriteLine(item);

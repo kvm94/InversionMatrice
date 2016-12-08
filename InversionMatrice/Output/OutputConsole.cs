@@ -125,6 +125,9 @@ namespace InversionMatrice
             Console.WriteLine("=               Inversion de L                =");
             Console.WriteLine("===============================================");
             Console.WriteLine();
+            Console.WriteLine("& étant la matrice identité.");
+            Console.WriteLine();
+
             foreach (var item in display)
             {
                 Console.WriteLine(item);
