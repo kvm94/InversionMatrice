@@ -14,7 +14,11 @@ namespace InversionMatrice
         void AfficherPermutations(Matrice mat, out bool flagSwaps);
         void AfficherMatriceU(Matrice mat);
         void AfficherMatriceL(Matrice mat);
-        void AfficherVérification(Matrice mat, Matrice A, out bool flagSwaps);
+        void AfficherVerificationDecomp(Matrice mat, Matrice A, out bool flagSwaps);
         void AfficherLInverse(ref List<String> display);
+        void AfficherUInverse(ref List<String> display);
+        void AfficherInverse(Matrice mat, ref List<String>display);
+        void AfficherVerification(Matrice A, Matrice B, Matrice res, bool check);
+
     }
 }

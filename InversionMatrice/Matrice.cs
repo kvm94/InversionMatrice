@@ -51,6 +51,27 @@ namespace InversionMatrice
             U = null;
         }
 
+        public Matrice(Matrice m)
+        {
+            nbrCol = m.NbrCol;
+            nbrLn = m.NbrLn;
+            values = new double[nbrLn, nbrCol];
+
+            //Besoin pour ne pas copier la référence.
+            for (int i = 0; i < nbrLn; i++)
+            {
+                for (int j = 0; j < nbrCol; j++)
+                {
+                    values[i, j] = m[i, j];
+                }
+            }
+
+
+            determinant = null;
+            L = null;
+            U = null;
+        }
+
         #endregion
 
         #region Méthodes
@@ -207,6 +228,7 @@ namespace InversionMatrice
                 {
                     for (int j = 0; j < m.nbrCol; j++)
                     {
+                        temp[i, j] = 0;
                         for (int k = 0; k < m.nbrCol; k++)
                         {
                             //Calcul le produit matricielle de [i,j]
@@ -216,7 +238,7 @@ namespace InversionMatrice
                 }
 
                 return temp;
-            }
+        }
             else
             {
                 throw new Exception("Impossible de multiplier ces matrice");
@@ -394,7 +416,7 @@ namespace InversionMatrice
                 {
                     while (j < B.nbrCol && check == true)
                     {
-                        check = values[i,j] == B[i, j];
+                        check = Math.Truncate(values[i,j]) == B[i, j];
                         j++;
                     }
                     i++;
@@ -428,8 +450,46 @@ namespace InversionMatrice
             if (IsInversible())
             {
                 Matrice LPrime = InverseL();
+                Matrice UPrime = InverseU();
 
+                this.values = (UPrime.Product(LPrime)).values;
 
+                //Permute les colonnes si il y a eu des permutation de lignes.
+                for (int i = 0; i < Swaps.GetLength(0); i++)
+                {
+                    if (Swaps[i, 0] != -1)
+                    {
+                        SwapCol(Swaps[i,0], Swaps[i,1]);
+                    } 
+                }
+
+            }
+            else
+                throw new Exception("La matrice n'est pas inversible : déterminant = 0");
+        }
+
+        //Inverse la matrice avec l'affichage en sortie.
+        public Matrice Inverse(out List<String> display)
+        {
+            if (IsInversible())
+            {
+                Matrice inverse;
+                display = new List<string>();
+                Matrice LPrime = InverseL();
+                Matrice UPrime = InverseU();
+
+                inverse = UPrime.Product(LPrime);
+
+                //Permute les colonnes si il y a eu des permutation de lignes.
+                for (int i = Swaps.GetLength(0)-1; i >= 0; i--)
+                {
+                    if (Swaps[i, 0] != -1)
+                    {
+                        inverse.SwapCol(Swaps[i, 0], Swaps[i, 1]);
+                        display.Add("Permutation de colonne : " + (Swaps[i, 0]+1) + " <->" +  (Swaps[i, 1]+1));
+                    }
+                }
+                return inverse;
             }
             else
                 throw new Exception("La matrice n'est pas inversible : déterminant = 0");
@@ -527,6 +587,102 @@ namespace InversionMatrice
                     display.Add(item);
                 }
                 return LPrime;
+            }
+            else
+                throw new Exception("La matrice n'est pas inversible : déterminant = 0");
+        }
+
+        //Inverse la matrice U
+        public Matrice InverseU()
+        {
+            if (IsInversible())
+            {
+                Matrice ident = InitIdentite(NbrLn);
+                Matrice UPrime = new Matrice(NbrLn, NbrCol);
+                double somme = 0;
+
+                //La dernière ligne.
+                for (int j = 0; j < nbrCol; j++)
+                    UPrime[NbrLn-1, j] = ident[NbrLn-1, j]/U[NbrLn-1, NbrLn-1];
+
+                //Pour chaque ligne.
+                for (int i = NbrLn -2; i >= 0; i--)
+                {
+                    //Pour chaque colonne.
+                    for (int j = 0; j < NbrCol; j++)
+                    {
+                        somme = 0;
+
+                        //Nombre d'élément de la somme.
+                        for (int k = i+1; k < NbrLn; k++)
+                        {
+                            somme += U[i, k] * UPrime[k, j];
+                        }
+
+                        //Applique la formule.
+                        UPrime[i, j] = (ident[i, j] - somme)/U[i,i];
+                    }
+                }
+                return UPrime;
+            }
+            else
+                throw new Exception("La matrice n'est pas inversible : déterminant = 0");
+        }
+
+        //Inverse la matrice U avec sortie pour l'affichage.
+        public Matrice InverseU(out List<String> display)
+        {
+            if (IsInversible())
+            {
+                Matrice ident = InitIdentite(NbrLn);
+                Matrice UPrime = new Matrice(NbrLn, NbrCol);
+                double somme = 0;
+
+                display = new List<string>();
+                display.Add("Etape 1: ");
+                display.Add("--------");
+                display.Add("");
+
+                //La dernière ligne.
+                for (int j = 0; j < nbrCol; j++)
+                {
+                    UPrime[NbrLn - 1, j] = ident[NbrLn - 1, j] / U[NbrLn - 1, NbrLn - 1];
+                    display.Add(String.Format("x"+ NbrLn + (j+1) + " = {0,8:#0.##} = &"+ NbrLn + (j+1) + "/u"+NbrLn+NbrLn , UPrime[NbrLn-1, j]));
+                }
+
+                //Pour chaque ligne.
+                for (int i = NbrLn - 2; i >= 0; i--)
+                {
+                    display.Add("");
+                    display.Add("Etape " + (NbrLn-i) + ":");
+                    display.Add("--------");
+                    display.Add("");
+                    //Pour chaque colonne.
+                    for (int j = 0; j < NbrCol; j++)
+                    {
+                        somme = 0;
+                        String tmp = "";
+                        //Nombre d'élément de la somme.
+                        for (int k = i + 1; k < NbrLn; k++)
+                        {
+                            tmp += " - u" + (i + 1) + (k + 1) + " * " + "y" + (k + 1) + (j + 1);
+                            somme += U[i, k] * UPrime[k, j];
+                        }
+
+                        //Applique la formule.
+                        UPrime[i, j] = (ident[i, j] - somme) / U[i, i];
+                        display.Add(String.Format("x" + (i + 1) + (j + 1) + " = {0,8:#0.##} = (&" + (i + 1) + (j + 1) + tmp + ")/u"+ (i+1)+(i+1), UPrime[i, j]));
+
+                    }
+                }
+
+                display.Add("");
+                display.Add("Matrice U inversé : ");
+                foreach (var item in UPrime.Print())
+                {
+                    display.Add(item);
+                }
+                return UPrime;
             }
             else
                 throw new Exception("La matrice n'est pas inversible : déterminant = 0");

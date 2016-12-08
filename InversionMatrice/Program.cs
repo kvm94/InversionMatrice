@@ -182,20 +182,59 @@ namespace InversionMatrice
                                 A.SwapLn(mat.Swaps[i, 0], mat.Swaps[i, 1]);
                         }
 
-                        output.AfficherVérification(mat, A, out flagSwaps);
+                        output.AfficherVerificationDecomp(mat, A, out flagSwaps);
 
                         if (mat.Equals(A))
                         {
                             output.WriteLine("Matrices identiques ! ");
+                            output.WriteLine("Le determinant de la matrice = " + mat.Determinant);
                             output.WriteLine("");
                         }
                         else
                             throw new Exception("Les matrices ne sont pas identiques !");
 
                         //Affiche l'inverse des matrices.
-
+                        bool check;
                         Matrice LPrime = mat.InverseL(out display);
                         output.AfficherLInverse(ref display);
+
+                        /*Test*/
+
+                        output.WriteLine("Vérification inverse L*L(-1)");
+                        foreach (var item in (mat.MatriceL.Product(LPrime)).Print())
+                        {
+                            output.WriteLine(item);
+                        }
+
+                        /*Test*/
+
+                        Matrice UPrime = mat.InverseU(out display);
+                        output.AfficherUInverse(ref display);
+
+                        /*Test*/
+
+                        output.WriteLine("Vérification inverse U*U(-1)");
+                        foreach (var item in (mat.MatriceU.Product(UPrime)).Print())
+                        {
+                            output.WriteLine(item);
+                        }
+
+                        /*Test*/
+
+                        Matrice mInverse = mat.Inverse(out display);
+
+                        output.AfficherInverse(mInverse, ref display);
+
+                        Matrice res = mInverse.Product(mat);
+
+
+                        //Vérification
+                        if (res.Equals(Matrice.InitIdentite(mat.NbrLn)))
+                            check = true;
+                        else
+                            check = false;
+
+                        output.AfficherVerification(mInverse, mat, res, check);
                     }
 
                     Console.WriteLine("Le fichier à bien été enregistré!");
@@ -246,22 +285,53 @@ namespace InversionMatrice
                         A.SwapLn(mat.Swaps[i, 0], mat.Swaps[i, 1]);
                 }
 
-                output.AfficherVérification(mat, A, out flagSwaps);
+                output.AfficherVerificationDecomp(mat, A, out flagSwaps);
 
                 if (mat.Equals(A))
                 {
                     Console.WriteLine("Matrices identiques ! ");
-                    Console.WriteLine("");
+                    Console.WriteLine("Le determinant de la matrice = " + mat.Determinant);
+                    Console.WriteLine();
                 }
                 else
                     throw new Exception("Les matrices ne sont pas identiques !");
 
                 //Affiche l'inverse des matrices.
-                
+                bool check;
                 Matrice LPrime = mat.InverseL(out display);
                 output.AfficherLInverse(ref display);
 
-                //mat.Inverse();
+                /*Test*/
+
+                Console.WriteLine("Vérification inverse L*L(-1)");
+                (mat.MatriceL.Product(LPrime)).Display();
+
+                /*Test*/
+
+                Matrice UPrime = mat.InverseU(out display);
+                output.AfficherUInverse(ref display);
+
+                /*Test*/
+
+                Console.WriteLine("Vérification inverse U*U(-1)");
+                (mat.MatriceU.Product(UPrime)).Display();
+
+                /*Test*/
+
+                Matrice mInverse = mat.Inverse(out display);
+
+                output.AfficherInverse(mInverse, ref display);
+
+                Matrice res = mInverse.Product(mat);
+
+
+                //Vérification
+                if (res.Equals(Matrice.InitIdentite(mat.NbrLn)))
+                    check = true;
+                else
+                    check = false;
+
+                output.AfficherVerification(mInverse, mat, res,check);
 
                 Console.ReadLine();
             }

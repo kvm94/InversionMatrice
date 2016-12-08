@@ -116,7 +116,7 @@ namespace InversionMatrice
             Flux.WriteLine();
         }
 
-        public void AfficherVérification(Matrice mat, Matrice A, out bool flagSwaps)
+        public void AfficherVerificationDecomp(Matrice mat, Matrice A, out bool flagSwaps)
         {
             Flux.WriteLine("===============================================");
             Flux.WriteLine("=              Vérification A=L*U             =");
@@ -156,6 +156,77 @@ namespace InversionMatrice
                 Flux.WriteLine(item);
             }
             Flux.WriteLine();
+        }
+
+        public void AfficherUInverse(ref List<String> display)
+        {
+            Flux.WriteLine("===============================================");
+            Flux.WriteLine("=               Inversion de U                =");
+            Flux.WriteLine("===============================================");
+            Flux.WriteLine();
+            Flux.WriteLine("& étant la matrice identité.");
+            Flux.WriteLine();
+
+
+            foreach (var item in display)
+            {
+                Flux.WriteLine(item);
+            }
+            Flux.WriteLine();
+        }
+
+        public void AfficherInverse(Matrice mat, ref List<String> display)
+        {
+            Flux.WriteLine("===============================================");
+            Flux.WriteLine("=           Résultat de l'inversion           =");
+            Flux.WriteLine("===============================================");
+            Flux.WriteLine();
+            foreach (var item in display)
+            {
+                Flux.WriteLine(item);
+            }
+
+            foreach (var item in mat.Print())
+            {
+                Flux.WriteLine(item);
+            }
+        }
+
+        public void AfficherVerification(Matrice A, Matrice B, Matrice res, bool check)
+        {
+            Flux.WriteLine("===============================================");
+            Flux.WriteLine("=          Vérification A*A(-1) = &           =");
+            Flux.WriteLine("===============================================");
+            Flux.WriteLine();
+
+            foreach (var item in A.Print())
+            {
+                Flux.WriteLine(item);
+            }
+            Flux.WriteLine("");
+            Flux.WriteLine("     *");
+            Flux.WriteLine("");
+            foreach (var item in B.Print())
+            {
+                Flux.WriteLine(item);
+            }
+            Flux.WriteLine("");
+            Flux.WriteLine("     =");
+            Flux.WriteLine("");
+            foreach (var item in res.Print())
+            {
+                Flux.WriteLine(item);
+            }
+
+            Flux.WriteLine();
+
+            if (check)
+                Flux.WriteLine("L'inversion de la matrice c'est bien déroulé!");
+            else
+                Flux.WriteLine("Erreur :  le résultat est faux!");
+
+
+
         }
     }
 }
