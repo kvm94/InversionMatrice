@@ -24,10 +24,6 @@ namespace InversionMatrice
             Flux = new System.IO.StreamWriter(path);
         }
 
-        ~OutputFile(){
-            Flux.Close();
-        }
-
         public void WriteLine(String s)
         {
             Flux.WriteLine(s);

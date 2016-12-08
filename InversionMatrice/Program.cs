@@ -103,32 +103,40 @@ namespace InversionMatrice
             Matrice mat = null;
             double[,] data;
             int ln, col;
+            bool flag =false;
 
-            try
+            do
             {
-                Console.WriteLine("Taille de la matrice : ");
-                Console.Write("Lignes ? ");
-                ln = int.Parse(Console.ReadLine());
-                Console.Write("Colonnes ? ");
-                col = int.Parse(Console.ReadLine());
-
-                data = new double[ln, col];
-
-                for (int i = 0; i < ln; i++)
+                try
                 {
-                    for (int j = 0; j < col; j++)
-                    {
-                        Console.WriteLine("m" + i+j + ": ");
-                        data[i, j] = double.Parse(Console.ReadLine());    
-                    }
-                }
+                    Console.WriteLine("Taille de la matrice : ");
+                    Console.Write("Lignes ? ");
+                    ln = int.Parse(Console.ReadLine());
+                    Console.Write("Colonnes ? ");
+                    col = int.Parse(Console.ReadLine());
 
-                mat = new Matrice(data);
+                    data = new double[ln, col];
+
+                    for (int i = 0; i < ln; i++)
+                    {
+                        for (int j = 0; j < col; j++)
+                        {
+                            Console.WriteLine("m" + i + j + ": ");
+                            data[i, j] = double.Parse(Console.ReadLine());
+                        }
+                    }
+
+                    mat = new Matrice(data);
+                    flag = true;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.ReadLine();
+                }
             }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            while (!flag);
+            
 
             Console.Clear();
             return mat;
