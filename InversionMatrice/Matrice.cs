@@ -178,20 +178,20 @@ namespace InversionMatrice
         }
 
         //Renvoi l'affichage de la matrice.
-        public String Print()
+        public List<String> Print()
         {
-            String display = "";
+            List<String> display = new List<string>();
             for (int i = 0; i < nbrLn; i++)
             {
-                display += '(';
+                display.Add("(");
                 for (int j = 0; j < nbrCol; j++)
                 {
 
-                    display += String.Format("{0,6:#0.00} ", values[i, j]);
+                    display[i] += String.Format("{0,6:#0.00} ", values[i, j]);
                 }
-                display += ")\n";
+                display[i] += ")";
             }
-            display += "\n";
+            display.Add("");
             return display;
         }
 
@@ -306,7 +306,7 @@ namespace InversionMatrice
         }
 
         //Triangularise la matrice par la méthode de Gauss avec une sortie String pour l'affichage.
-        public Matrice Gauss(out int[,] swaps, out double[,] m, out String display)
+        public Matrice Gauss(out int[,] swaps, out double[,] m, out List<String> display)
         {
             if (IsSquare())
             {
@@ -314,15 +314,16 @@ namespace InversionMatrice
                 double pivot;
 
                 //Initialise la sortie.
-                display = "";
+                display = new List<string>();
                 swaps = new int[nbrLn - 1, 2];
                 m = new double[nbrLn, nbrCol];
 
                 //Pour chaque étape. (k-1 étapes)
                 for (int k = 0; k < nbrLn - 1; k++)
                 {
-                    display += "Etape : " + (k + 1) + "\n";
-                    display += "---------\n\n";
+                    display.Add("Etape : " + (k + 1));
+                    display.Add("---------");
+                    display.Add("");
 
                     pivot = temp[k, k];
 
@@ -343,7 +344,7 @@ namespace InversionMatrice
                         swaps[k, 0] = -1;
                         swaps[k, 1] = -1;
                     }
-                    display += String.Format("Pivot = {0,6:#0.00} \n", pivot);
+                    display.Add(String.Format("Pivot = {0,6:#0.00}", pivot));
 
 
                     //Pour chaque ligne de la matrice. 
@@ -351,7 +352,7 @@ namespace InversionMatrice
                     for (int i = k + 1; i < nbrLn; i++)
                     {
                         m[i, k] = temp[i, k] / pivot;
-                        display += String.Format("m" + (i + 1) + (k + 1) + " = {0,6:#0.00} \n", m[i, k]);
+                        display.Add(String.Format("m" + (i + 1) + (k + 1) + " = {0,6:#0.00}", m[i, k]));
 
                         //Met les 0.
                         for (int j = k; j < nbrLn; j++)
@@ -361,13 +362,18 @@ namespace InversionMatrice
                     }
 
                     //Affiche le résultat à la fin de l'étape.
-                    display +=  "\n" + temp.Print();
-
+                    foreach (var item in temp.Print())
+                    {
+                        display.Add(item);
+                    }
+                    display.Add("");
                     //Affiche les lignes permutés pour chaque étapes.
                     if (swaps[k, 0] != -1)
-                        display += "Lignes permutés : " + (swaps[k, 0] + 1) + " <-> " + (swaps[k, 1] + 1) + "\n";
+                    {
+                        display.Add("Lignes permutés : " + (swaps[k, 0] + 1) + " <-> " + (swaps[k, 1] + 1));
+                        display.Add("");
+                    }
 
-                    display += "\n";
                 }
                 return temp;
             }
@@ -408,7 +414,7 @@ namespace InversionMatrice
         }
 
         //Décompose la matrice en deux sous matrice L et U avec une sortie de l'affichage.
-        public void DecompositionLU(out String display)
+        public void DecompositionLU(out List<String> display)
         {
             double[,] m;
             U = Gauss(out swaps, out m, out display);
@@ -466,29 +472,35 @@ namespace InversionMatrice
         }
 
         //Inverse la matrice L avec sortie pour l'affichage.
-        public Matrice InverseL(out String display)
+        public Matrice InverseL(out List<String> display)
         {
             if (IsInversible())
             {
                 Matrice ident = InitIdentite(NbrLn);
                 Matrice LPrime = new Matrice(NbrLn, NbrCol);
                 double somme = 0;
-                display = "Etape 1: \n";
-                display += "--------\n \n";
+                display = new List<string>();
+                display.Add("Etape 1: ");
+                display.Add("--------");
+                display.Add("");
 
                 //La première ligne est la même que l'identité.
-                
+
                 for (int j = 0; j < nbrCol; j++)
                 {
                     LPrime[0, j] = ident[0, j];
-                    display += "x1" + j +" = " + LPrime[0, j] + " = &1" + j + "\n";
+                    display.Add("x1" + j +" = " + LPrime[0, j] + " = &1" + j);
                 }
 
                 //Pour chaque ligne.
                 for (int i = 1; i < NbrLn; i++)
                 {
-                    display += "\nEtape " + (i+1) + ": \n";
-                    display += "--------\n \n";
+                    display.Add("");
+                    display.Add("Etape " + (i+1) + ":");
+                    display.Add("--------");
+                    display.Add("");
+                    display.Add("");
+
                     //Pour chaque colonne.
                     for (int j = 0; j < NbrCol; j++)
                     {
@@ -505,10 +517,15 @@ namespace InversionMatrice
                         //Applique la formule.
                         LPrime[i, j] = ident[i, j] - somme;
 
-                        display += "x" + (i+1) + (j+1) + " = "+ LPrime[i,j] + " = &" + (i+1) + (j+1) + tmp + "\n";
+                        display.Add("x" + (i+1) + (j+1) + " = "+ LPrime[i,j] + " = &" + (i+1) + (j+1) + tmp);
                     }
                 }
-                display += "\n"+LPrime.Print();
+                display.Add("");
+                display.Add("Matrice L inversé : ");
+                foreach (var item in LPrime.Print())
+                {
+                    display.Add(item);
+                }
                 return LPrime;
             }
             else
