@@ -16,7 +16,6 @@ namespace InversionMatrice
             Console.WriteLine("=                                     MARRA KEVIN 3IN                                             =");
             Console.WriteLine("=                                      HEPH CONDORCET                                             =");
             Console.WriteLine("===================================================================================================");
-            Console.WriteLine();
         }
 
 
@@ -35,9 +34,9 @@ namespace InversionMatrice
 
         public void AfficherMatrice(Matrice mat)
         {
-            Console.WriteLine("===============================================");
-            Console.WriteLine("=            Matrice à inverser               =");
-            Console.WriteLine("===============================================");
+            Console.WriteLine("===================================================================================================");
+            Console.WriteLine("=                                     Matrice à inverser                                          =");
+            Console.WriteLine("===================================================================================================");
             Console.WriteLine();
             mat.Display();
             Console.WriteLine();
@@ -45,9 +44,9 @@ namespace InversionMatrice
 
         public void AfficherGauss(List<String> display)
         {
-            Console.WriteLine("===============================================");
-            Console.WriteLine("=                   Gauss:                    =");
-            Console.WriteLine("===============================================");
+            Console.WriteLine("===================================================================================================");
+            Console.WriteLine("=                                            Gauss:                                               =");
+            Console.WriteLine("===================================================================================================");
             Console.WriteLine();
             //Affiche les étapes pour Gauss
             foreach (var item in display)
@@ -59,9 +58,9 @@ namespace InversionMatrice
 
         public void AfficherPermutations(Matrice mat, out bool flagSwaps)
         {
-            Console.WriteLine("===============================================");
-            Console.WriteLine("=               Permutations                  =");
-            Console.WriteLine("===============================================");
+            Console.WriteLine("===================================================================================================");
+            Console.WriteLine("=                                         Permutations                                            =");
+            Console.WriteLine("===================================================================================================");
             Console.WriteLine();
             flagSwaps = false;
             for (int i = 0; i < mat.Swaps.GetLength(0); i++)
@@ -79,9 +78,9 @@ namespace InversionMatrice
 
         public void AfficherMatriceU(Matrice mat)
         {
-            Console.WriteLine("===============================================");
-            Console.WriteLine("=                  Matrice U                  =");
-            Console.WriteLine("===============================================");
+            Console.WriteLine("===================================================================================================");
+            Console.WriteLine("=                                          Matrice U                                              =");
+            Console.WriteLine("===================================================================================================");
             Console.WriteLine();
 
             mat.MatriceU.Display();
@@ -90,9 +89,9 @@ namespace InversionMatrice
 
         public void AfficherMatriceL(Matrice mat)
         {
-            Console.WriteLine("===============================================");
-            Console.WriteLine("=                   Matrice L                 =");
-            Console.WriteLine("===============================================");
+            Console.WriteLine("===================================================================================================");
+            Console.WriteLine("=                                          Matrice L                                              =");
+            Console.WriteLine("===================================================================================================");
             Console.WriteLine();
             mat.MatriceL.Display();
             Console.WriteLine();
@@ -100,9 +99,9 @@ namespace InversionMatrice
 
         public void AfficherVerificationDecomp(Matrice mat, Matrice A, out bool flagSwaps)
         {
-            Console.WriteLine("===============================================");
-            Console.WriteLine("=              Vérification A=L*U             =");
-            Console.WriteLine("===============================================");
+            Console.WriteLine("===================================================================================================");
+            Console.WriteLine("=                                       Vérification A=L*U                                        =");
+            Console.WriteLine("===================================================================================================");
             Console.WriteLine();
             Console.WriteLine("Matrice A :");
             A.Display();
@@ -121,9 +120,9 @@ namespace InversionMatrice
 
         public void AfficherLInverse(ref List<String> display)
         {
-            Console.WriteLine("===============================================");
-            Console.WriteLine("=               Inversion de L                =");
-            Console.WriteLine("===============================================");
+            Console.WriteLine("===================================================================================================");
+            Console.WriteLine("=                                         Inversion de L                                          =");
+            Console.WriteLine("===================================================================================================");
             Console.WriteLine();
             Console.WriteLine("& étant la matrice identité.");
             Console.WriteLine();
@@ -137,9 +136,9 @@ namespace InversionMatrice
 
         public void AfficherUInverse(ref List<String> display)
         {
-            Console.WriteLine("===============================================");
-            Console.WriteLine("=               Inversion de U                =");
-            Console.WriteLine("===============================================");
+            Console.WriteLine("===================================================================================================");
+            Console.WriteLine("=                                          Inversion de U                                         =");
+            Console.WriteLine("===================================================================================================");
             Console.WriteLine();
             Console.WriteLine("& étant la matrice identité.");
             Console.WriteLine();
@@ -154,9 +153,9 @@ namespace InversionMatrice
 
         public void AfficherInverse(Matrice mat, ref List<String> display)
         {
-            Console.WriteLine("===============================================");
-            Console.WriteLine("=           Résultat de l'inversion           =");
-            Console.WriteLine("===============================================");
+            Console.WriteLine("===================================================================================================");
+            Console.WriteLine("=                                       Résultat de l'inversion                                   =");
+            Console.WriteLine("===================================================================================================");
             Console.WriteLine();
             foreach (var item in display)
             {
@@ -167,9 +166,9 @@ namespace InversionMatrice
 
         public void AfficherVerification(Matrice A, Matrice B, Matrice res, bool check)
         {
-            Console.WriteLine("===============================================");
-            Console.WriteLine("=          Vérification A*A(-1) = &           =");
-            Console.WriteLine("===============================================");
+            Console.WriteLine("===================================================================================================");
+            Console.WriteLine("=                                        Vérification A*A(-1) = &                                 =");
+            Console.WriteLine("===================================================================================================");
             Console.WriteLine();
 
             A.Display();

@@ -32,19 +32,19 @@ namespace InversionMatrice
         public void Head()
         {
             Flux.WriteLine("===================================================================================================");
-            Flux.WriteLine("=                                      PROJET DE MATH                                             =");
-            Flux.WriteLine("=                       INVERSION D'UNE MATRICE PAR DECOMPOSITION LU                              =");
-            Flux.WriteLine("=                                     MARRA KEVIN 3IN                                             =");
-            Flux.WriteLine("=                                      HEPH CONDORCET                                             =");
+            Flux.WriteLine("=                                       PROJET DE MATH                                            =");
+            Flux.WriteLine("=                        INVERSION D'UNE MATRICE PAR DECOMPOSITION LU                             =");
+            Flux.WriteLine("=                                      MARRA KEVIN 3IN                                            =");
+            Flux.WriteLine("=                                       HEPH CONDORCET                                            =");
             Flux.WriteLine("===================================================================================================");
             Flux.WriteLine();
         }
 
         public void AfficherMatrice(Matrice mat)
         {
-            Flux.WriteLine("===============================================");
-            Flux.WriteLine("=            Matrice à inverser               =");
-            Flux.WriteLine("===============================================");
+            Flux.WriteLine("===================================================================================================");
+            Flux.WriteLine("=                                      Matrice à inverser                                         =");
+            Flux.WriteLine("===================================================================================================");
             Flux.WriteLine();
             foreach (var item in mat.Print())
             {
@@ -56,9 +56,9 @@ namespace InversionMatrice
 
         public void AfficherGauss(List<String> display)
         {
-            Flux.WriteLine("===============================================");
-            Flux.WriteLine("=                   Gauss:                    =");
-            Flux.WriteLine("===============================================");
+            Flux.WriteLine("===================================================================================================");
+            Flux.WriteLine("=                                            Gauss:                                               =");
+            Flux.WriteLine("===================================================================================================");
             Flux.WriteLine();
             //Affiche les étapes pour Gauss
             foreach (var item in display)
@@ -70,9 +70,9 @@ namespace InversionMatrice
 
         public void AfficherPermutations(Matrice mat, out bool flagSwaps)
         {
-            Flux.WriteLine("===============================================");
-            Flux.WriteLine("=               Permutations                  =");
-            Flux.WriteLine("===============================================");
+            Flux.WriteLine("===================================================================================================");
+            Flux.WriteLine("=                                           Permutations                                          =");
+            Flux.WriteLine("===================================================================================================");
             Flux.WriteLine();
             flagSwaps = false;
             for (int i = 0; i < mat.Swaps.GetLength(0); i++)
@@ -90,9 +90,9 @@ namespace InversionMatrice
 
         public void AfficherMatriceU(Matrice mat)
         {
-            Flux.WriteLine("===============================================");
-            Flux.WriteLine("=                  Matrice U                  =");
-            Flux.WriteLine("===============================================");
+            Flux.WriteLine("===================================================================================================");
+            Flux.WriteLine("=                                             Matrice U                                           =");
+            Flux.WriteLine("===================================================================================================");
             Flux.WriteLine();
             foreach (var item in mat.MatriceU.Print())
             {
@@ -104,9 +104,9 @@ namespace InversionMatrice
 
         public void AfficherMatriceL(Matrice mat)
         {
-            Flux.WriteLine("===============================================");
-            Flux.WriteLine("=                   Matrice L                 =");
-            Flux.WriteLine("===============================================");
+            Flux.WriteLine("===================================================================================================");
+            Flux.WriteLine("=                                             Matrice L                                           =");
+            Flux.WriteLine("===================================================================================================");
             Flux.WriteLine();
             foreach (var item in mat.MatriceU.Print())
             {
@@ -118,9 +118,9 @@ namespace InversionMatrice
 
         public void AfficherVerificationDecomp(Matrice mat, Matrice A, out bool flagSwaps)
         {
-            Flux.WriteLine("===============================================");
-            Flux.WriteLine("=              Vérification A=L*U             =");
-            Flux.WriteLine("===============================================");
+            Flux.WriteLine("===================================================================================================");
+            Flux.WriteLine("=                                          Vérification A=L*U                                     =");
+            Flux.WriteLine("===================================================================================================");
             Flux.WriteLine();
             Flux.WriteLine("Matrice A :");
             foreach (var item in A.Print())
@@ -143,9 +143,9 @@ namespace InversionMatrice
 
         public void AfficherLInverse(ref List<String> display)
         {
-            Flux.WriteLine("===============================================");
-            Flux.WriteLine("=               Inversion de L                =");
-            Flux.WriteLine("===============================================");
+            Flux.WriteLine("===================================================================================================");
+            Flux.WriteLine("=                                           Inversion de L                                        =");
+            Flux.WriteLine("===================================================================================================");
             Flux.WriteLine();
             Flux.WriteLine("& étant la matrice identité.");
             Flux.WriteLine();
@@ -160,9 +160,9 @@ namespace InversionMatrice
 
         public void AfficherUInverse(ref List<String> display)
         {
-            Flux.WriteLine("===============================================");
-            Flux.WriteLine("=               Inversion de U                =");
-            Flux.WriteLine("===============================================");
+            Flux.WriteLine("===================================================================================================");
+            Flux.WriteLine("=                                          Inversion de U                                         =");
+            Flux.WriteLine("===================================================================================================");
             Flux.WriteLine();
             Flux.WriteLine("& étant la matrice identité.");
             Flux.WriteLine();
@@ -177,9 +177,9 @@ namespace InversionMatrice
 
         public void AfficherInverse(Matrice mat, ref List<String> display)
         {
-            Flux.WriteLine("===============================================");
-            Flux.WriteLine("=           Résultat de l'inversion           =");
-            Flux.WriteLine("===============================================");
+            Flux.WriteLine("===================================================================================================");
+            Flux.WriteLine("=                                       Résultat de l'inversion                                   =");
+            Flux.WriteLine("===================================================================================================");
             Flux.WriteLine();
             foreach (var item in display)
             {
@@ -194,9 +194,9 @@ namespace InversionMatrice
 
         public void AfficherVerification(Matrice A, Matrice B, Matrice res, bool check)
         {
-            Flux.WriteLine("===============================================");
-            Flux.WriteLine("=          Vérification A*A(-1) = &           =");
-            Flux.WriteLine("===============================================");
+            Flux.WriteLine("===================================================================================================");
+            Flux.WriteLine("=                                     Vérification A*A(-1) = &                                    =");
+            Flux.WriteLine("===================================================================================================");
             Flux.WriteLine();
 
             foreach (var item in A.Print())

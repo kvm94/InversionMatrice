@@ -416,7 +416,7 @@ namespace InversionMatrice
                 {
                     while (j < B.nbrCol && check == true)
                     {
-                        check = Math.Truncate(values[i,j]) == B[i, j];
+                        check = Math.Round(values[i,j]) == B[i, j];
                         j++;
                     }
                     i++;

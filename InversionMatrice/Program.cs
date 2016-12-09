@@ -10,92 +10,106 @@ namespace InversionMatrice
     {
         static void Main(string[] args)
         {
-            try
+            do
             {
-                int choice;
-                OutputConsole outputC;
-
-                outputC = new OutputConsole();
-
-                //Affiche le menu principal.
-                do
+                try
                 {
-                    Console.Clear();
-                    //Affiche l'entête.
-                    outputC.Head();
-                    outputC.Menu();
+                    int choice;
+                    OutputConsole outputC;
 
-                    try
-                    {
-                        choice = int.Parse(Console.ReadLine());
-                    }                
-                    catch(Exception ex)
-                    {
-                        Console.WriteLine(ex.Message);
-                        Console.ReadLine();
-                        choice = -1;
-                    }
-                }
-                while (choice != 5 && choice != 4 && choice != 3 && choice != 2 && choice != 1);
+                    outputC = new OutputConsole();
 
-                //Effectue l'action en fonction du choix du menu principal.
-                String path="";
-                switch (choice)
-                {
-                    case 1:
-                        Console.WriteLine("Nom du fichier d'entré : ");
-                        try
-                        {
-                            path = Console.ReadLine();
-                        }
-                        catch(Exception ex)
-                        {
-                            Console.WriteLine(ex.Message);
-                        }
+                    //Affiche le menu principal.
+                    do
+                    {
                         Console.Clear();
-                        SortieTexte(LectureFichier(path));
-                        break;
-                    case 2:
-                        Console.WriteLine("Nom du fichier d'entré : ");
+                        //Affiche l'entête.
+                        outputC.Head();
+                        outputC.Menu();
+                        Console.WriteLine("Choix : ");
+
                         try
                         {
-                            path = Console.ReadLine();
+                            choice = int.Parse(Console.ReadLine());
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine(ex.Message);
+                            throw new Exception(ex.Message);
                         }
-                        Console.Clear();
-                        SortieConsole(LectureFichier(path));
-                        break;
-                    case 3:
-                        Console.Clear();
-                        SortieTexte(Saisie());
-                        break;
-                    case 4:
-                        Console.Clear();
-                        SortieConsole(Saisie());
-                        break;
 
-                    case 5: Environment.Exit(0); break;               
+                        Console.WriteLine();
+                    }
+                    while (choice != 5 && choice != 4 && choice != 3 && choice != 2 && choice != 1);
+
+                    //Effectue l'action en fonction du choix du menu principal.
+                    String path = "";
+                    switch (choice)
+                    {
+                        case 1:
+                            Console.WriteLine("Nom du fichier d'entré : ");
+                            try
+                            {
+                                path = Console.ReadLine();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Exception(ex.Message);
+
+                            }
+                            Console.Clear();
+                            SortieTexte(LectureFichier(path));
+                            break;
+                        case 2:
+                            Console.WriteLine("Nom du fichier d'entré : ");
+                            try
+                            {
+                                path = Console.ReadLine();
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Exception(ex.Message);
+                            }
+                            Console.Clear();
+                            SortieConsole(LectureFichier(path));
+                            break;
+                        case 3:
+                            Console.Clear();
+                            SortieTexte(Saisie());
+                            break;
+                        case 4:
+                            Console.Clear();
+                            SortieConsole(Saisie());
+                            break;
+
+                        case 5: Environment.Exit(0); break;
+                    }
+
+
                 }
-
-                
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    Console.ReadLine();
+                }
+                Console.Clear();
             }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-
+            while (true);
         }
 
         public static Matrice LectureFichier(String path)
         {
-            Matrice mat;
-            InputFile input = new InputFile(path);
-            mat = input.ReadFile();
-            return mat;
+            try
+            {
+                Matrice mat;
+                InputFile input = new InputFile(path);
+                mat = input.ReadFile();
+                return mat;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
 
         public static Matrice Saisie()
@@ -131,8 +145,7 @@ namespace InversionMatrice
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
-                    Console.ReadLine();
+                    throw new Exception(ex.Message);
                 }
             }
             while (!flag);
@@ -242,9 +255,8 @@ namespace InversionMatrice
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
-                    Console.WriteLine("Erreur, le programme va se fermer.");
-                    Console.ReadLine();
+                    throw new Exception(ex.Message);
+
                 }
 
             }
@@ -256,85 +268,93 @@ namespace InversionMatrice
             List<String> display;
             bool flagSwaps;
 
-            if (mat != null)
+            try
             {
-                //Affiche la matrice initiale.
-                output.AfficherMatrice(mat);
-
-                //Affiche la triangulisation par Gauss
-                mat.DecompositionLU(out display);
-                output.AfficherGauss(display);
-
-                //Affichage des permutations
-                output.AfficherPermutations(mat, out flagSwaps);
-
-
-                //Affiche la matrice U
-                output.AfficherMatriceU(mat);
-
-                //Affiche la matrice L
-                output.AfficherMatriceL(mat);
-
-                //Affiche la vérification.
-                Matrice A = mat.MatriceL.Product(mat.MatriceU);
-
-                //On refait les permutation pour vérifier si c'est la meme matrice.
-                for (int i = 0; i < mat.Swaps.GetLength(0); i++)
+                if (mat != null)
                 {
-                    if (mat.Swaps[i, 0] != -1)
-                        A.SwapLn(mat.Swaps[i, 0], mat.Swaps[i, 1]);
+                    //Affiche la matrice initiale.
+                    output.AfficherMatrice(mat);
+
+                    //Affiche la triangulisation par Gauss
+                    mat.DecompositionLU(out display);
+                    output.AfficherGauss(display);
+
+                    //Affichage des permutations
+                    output.AfficherPermutations(mat, out flagSwaps);
+
+
+                    //Affiche la matrice U
+                    output.AfficherMatriceU(mat);
+
+                    //Affiche la matrice L
+                    output.AfficherMatriceL(mat);
+
+                    //Affiche la vérification.
+                    Matrice A = mat.MatriceL.Product(mat.MatriceU);
+
+                    //On refait les permutation pour vérifier si c'est la meme matrice.
+                    for (int i = 0; i < mat.Swaps.GetLength(0); i++)
+                    {
+                        if (mat.Swaps[i, 0] != -1)
+                            A.SwapLn(mat.Swaps[i, 0], mat.Swaps[i, 1]);
+                    }
+
+                    output.AfficherVerificationDecomp(mat, A, out flagSwaps);
+
+                    if (mat.Equals(A))
+                    {
+                        Console.WriteLine("Matrices identiques ! ");
+                        Console.WriteLine("Le determinant de la matrice = " + mat.Determinant);
+                        Console.WriteLine();
+                    }
+                    else
+                        throw new Exception("Les matrices ne sont pas identiques !");
+
+                    //Affiche l'inverse des matrices.
+                    bool check;
+                    Matrice LPrime = mat.InverseL(out display);
+                    output.AfficherLInverse(ref display);
+
+                    /*Test*/
+
+                    Console.WriteLine("Vérification inverse L*L(-1)");
+                    (mat.MatriceL.Product(LPrime)).Display();
+
+                    /*Test*/
+
+                    Matrice UPrime = mat.InverseU(out display);
+                    output.AfficherUInverse(ref display);
+
+                    /*Test*/
+
+                    Console.WriteLine("Vérification inverse U*U(-1)");
+                    (mat.MatriceU.Product(UPrime)).Display();
+
+                    /*Test*/
+
+                    Matrice mInverse = mat.Inverse(out display);
+
+                    output.AfficherInverse(mInverse, ref display);
+
+                    Matrice res = mInverse.Product(mat);
+
+
+                    //Vérification
+                    if (res.Equals(Matrice.InitIdentite(mat.NbrLn)))
+                        check = true;
+                    else
+                        check = false;
+
+                    output.AfficherVerification(mInverse, mat, res, check);
+
+                    Console.ReadLine();
                 }
-
-                output.AfficherVerificationDecomp(mat, A, out flagSwaps);
-
-                if (mat.Equals(A))
-                {
-                    Console.WriteLine("Matrices identiques ! ");
-                    Console.WriteLine("Le determinant de la matrice = " + mat.Determinant);
-                    Console.WriteLine();
-                }
-                else
-                    throw new Exception("Les matrices ne sont pas identiques !");
-
-                //Affiche l'inverse des matrices.
-                bool check;
-                Matrice LPrime = mat.InverseL(out display);
-                output.AfficherLInverse(ref display);
-
-                /*Test*/
-
-                Console.WriteLine("Vérification inverse L*L(-1)");
-                (mat.MatriceL.Product(LPrime)).Display();
-
-                /*Test*/
-
-                Matrice UPrime = mat.InverseU(out display);
-                output.AfficherUInverse(ref display);
-
-                /*Test*/
-
-                Console.WriteLine("Vérification inverse U*U(-1)");
-                (mat.MatriceU.Product(UPrime)).Display();
-
-                /*Test*/
-
-                Matrice mInverse = mat.Inverse(out display);
-
-                output.AfficherInverse(mInverse, ref display);
-
-                Matrice res = mInverse.Product(mat);
-
-
-                //Vérification
-                if (res.Equals(Matrice.InitIdentite(mat.NbrLn)))
-                    check = true;
-                else
-                    check = false;
-
-                output.AfficherVerification(mInverse, mat, res,check);
-
-                Console.ReadLine();
             }
+            catch(Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
 
         }
     }
