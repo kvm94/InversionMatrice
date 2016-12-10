@@ -8,6 +8,11 @@ namespace InversionMatrice
 {
     class OutputConsole:IOutput
     {
+        public void WriteLine(String s)
+        {
+            Console.WriteLine(s);
+        }
+
         public void Head()
         {
             Console.WriteLine("===================================================================================================");
@@ -189,9 +194,6 @@ namespace InversionMatrice
                 Console.WriteLine("L'inversion de la matrice c'est bien déroulé!");
             else
                 Console.WriteLine("Erreur :  le résultat est faux!");
-
-
-
         }
 
     }

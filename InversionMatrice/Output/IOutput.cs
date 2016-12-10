@@ -8,6 +8,7 @@ namespace InversionMatrice
 {
     interface IOutput
     {
+        void WriteLine(String s);
         void Head();
         void AfficherMatrice(Matrice mat);
         void AfficherGauss(List<String> display);

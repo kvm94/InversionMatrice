@@ -28,6 +28,8 @@ namespace InversionMatrice
             try
             {
                 lines = System.IO.File.ReadAllLines(path);
+                if (lines.Length == 0)
+                    throw new Exception("Le fichier est vide!");
                 return LoadMatrice();
             }
             catch (Exception ex)
