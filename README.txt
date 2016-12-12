@@ -1,0 +1,2 @@
+- Le fichier de sortie texte sera généré à la racine de l'application.
+- Le dossier "Matrix" contient des examples de matrices.
