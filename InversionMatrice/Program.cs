@@ -14,7 +14,8 @@ namespace InversionMatrice
         //Programme principal.
         static void Main(string[] args)
         {
-            
+            InitConsole();
+
             //Boucle sur le Menu.
             do
             {
@@ -119,6 +120,25 @@ namespace InversionMatrice
                 Console.Clear();
             }
             while (true);
+        }
+
+        //Initialise le paramètres de la console.
+        static void InitConsole()
+        {
+            try
+            {
+                Console.Title = "Inversion matricielle par décomposition LU";
+                Console.WindowWidth = 100;
+                Console.WindowHeight = 30;
+                Console.BufferWidth = 101;
+                Console.BufferWidth = 100;
+                Console.BackgroundColor = ConsoleColor.DarkBlue;
+                Console.Clear();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erreur lors de l'initialisation de la console : " + ex);
+            }
         }
 
         //Lit la matrice à partir d'un fichier.
