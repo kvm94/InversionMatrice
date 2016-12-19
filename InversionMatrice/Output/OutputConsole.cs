@@ -34,7 +34,8 @@ namespace InversionMatrice
             Console.WriteLine("              2)Inverser une matrice à partir d'un fichier texte -> Sortie console .");
             Console.WriteLine("              3)Inverser une matrice à partir de la console -> Sortie .txt");
             Console.WriteLine("              4)Inverser une matrice à partir de la console -> Sortie console");
-            Console.WriteLine("              5)Quitter");
+            Console.WriteLine("              5)Changer la précision.");
+            Console.WriteLine("              6)Quitter");
         }
 
         public void AfficherMatrice(Matrice mat)
@@ -191,7 +192,7 @@ namespace InversionMatrice
             Console.WriteLine();
 
             if (check)
-                Console.WriteLine("L'inversion de la matrice c'est bien déroulé!");
+                Console.WriteLine("L'inversion de la matrice c'est bien déroulée!");
             else
                 Console.WriteLine("Erreur :  le résultat est faux!");
         }

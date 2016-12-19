@@ -10,6 +10,7 @@ namespace InversionMatrice
     {
         public static OutputFile    OutputF { get; private set; }
         public static OutputConsole OutputC { get; private set; }
+        private static int precision = 2;
 
         //Programme principal.
         static void Main(string[] args)
@@ -32,6 +33,9 @@ namespace InversionMatrice
                         Console.Clear();
                         o.Head();
                         o.Menu();
+                        Console.WriteLine("");
+                        Console.WriteLine("Précision : " + precision);
+                        Console.WriteLine("");
                         Console.WriteLine("Choix : ");
 
                         try
@@ -46,7 +50,7 @@ namespace InversionMatrice
 
                         Console.WriteLine();
                     }
-                    while (choice != 5 && choice != 4 && choice != 3 && choice != 2 && choice != 1);
+                    while (choice != 6 && choice != 5 && choice != 4 && choice != 3 && choice != 2 && choice != 1);
 
                     //Effectue le choix demandé.
                     String path = "";
@@ -106,8 +110,20 @@ namespace InversionMatrice
                             Output(Saisie(), OutputC);
                             Console.ReadLine();
                             break;
+                        case 5:
+                            Console.WriteLine("Précision?");
+                            try
+                            {
+                                precision = int.Parse(Console.ReadLine());
+                                Matrice.Precision = precision;
+                            }
+                            catch(Exception ex)
+                            {
+                                throw new Exception(ex.Message);
+                            }
+                            break;
 
-                        case 5: Environment.Exit(0); break;
+                        case 6: Environment.Exit(0); break;
                     }
 
 

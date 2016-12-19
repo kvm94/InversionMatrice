@@ -9,6 +9,7 @@ namespace InversionMatrice
     class Matrice
     {
         #region Attributs
+        public static int Precision { get; set; } = 2;
 
         private int nbrCol;
         private int nbrLn;
@@ -186,13 +187,19 @@ namespace InversionMatrice
         //Affiche la matrice.
         public void Display()
         {
+            //initialise le format d'affichage par rapport à la précision.
+            String format = "{0," + (8+Precision) + ":#0.";
+            for (int i = 0; i < Precision; i++)
+                format += "0";
+            format += "}";
+
             for (int i = 0; i < nbrLn; i++)
             {
                 Console.Write('(');
                 for (int j = 0; j < nbrCol; j++)
                 {
    
-                    Console.Write(String.Format("{0,7:#0.00} ", values[i, j]));
+                    Console.Write(String.Format(format, values[i, j]));
                 }
                 Console.WriteLine(")");
             }
@@ -201,6 +208,12 @@ namespace InversionMatrice
         //Renvoi l'affichage de la matrice.
         public List<String> Print()
         {
+            //initialise le format par rapport à la précision.
+            String format = "{0," + (8 + Precision) + ":#0.";
+            for (int i = 0; i < Precision; i++)
+                format += "0";
+            format += "}";
+
             List<String> display = new List<string>();
             for (int i = 0; i < nbrLn; i++)
             {
@@ -208,7 +221,7 @@ namespace InversionMatrice
                 for (int j = 0; j < nbrCol; j++)
                 {
 
-                    display[i] += String.Format("{0,7:#0.00} ", values[i, j]);
+                    display[i] += String.Format(format, values[i, j]);
                 }
                 display[i] += ")";
             }
@@ -299,6 +312,9 @@ namespace InversionMatrice
                         //Permute les lignes et recalcul le pivot.
                         temp.SwapLn(k, k + 1);
                         pivot = temp[k, k];
+
+                        if (pivot == 0)
+                            throw new Exception("La matrice n'est pas inversible !");
                     }
                     else
                     {
@@ -359,6 +375,9 @@ namespace InversionMatrice
                         //Permute les lignes et recalcul le pivot.
                         temp.SwapLn(k, k + 1);
                         pivot = temp[k, k];
+
+                        if (pivot == 0)
+                            throw new Exception("La matrice n'est pas inversible !");
                     }
                     else
                     {

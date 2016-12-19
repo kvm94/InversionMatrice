@@ -221,7 +221,7 @@ namespace InversionMatrice
             Flux.WriteLine();
 
             if (check)
-                Flux.WriteLine("L'inversion de la matrice c'est bien déroulé!");
+                Flux.WriteLine("L'inversion de la matrice c'est bien déroulée!");
             else
                 Flux.WriteLine("Erreur :  le résultat est faux!");
         }
